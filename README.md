@@ -3,3 +3,5 @@ Started my google data analytics course few months ago with the aim of acquiring
 To round up the course, we were required to do a case study to build a portfolio, and below is mine.
 In this case study, I worked as a junior data analyst who joined the team six months ago and have been learning about Cyclistic’s mission and business goals — as well as how I can help Cyclistic achieve their goal. 
 Here is a link to the project ![click here](https://github.com/MariamAdekanye/Cyclistic-Google-Project/blob/main/Google%20capstone%20project.Rmd)
+
+![picture](https://github.com/MariamAdekanye/Cyclistic-Google-Project/blob/main/1_dKXQMU1QAjgh4gQeIuMCMQ.jpeg)
