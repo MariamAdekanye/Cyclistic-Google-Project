@@ -1,0 +1,319 @@
+---
+title: "Google capstone project"
+author: "Mariam"
+date: "2022 M04 10"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Google capstone project
+Started my google data analytics course few months ago with the aim of acquiring the necessary skills to become a data analyst. I have been able to successfully completed 8 courses of the course in which has helped me gained the necessary skills. In the course, we were taken through the processes involved in analysis starting from the ask phase to the act phase. Also learnt the use of tools like spreadsheet, sql, tableau and R.
+To round up the course, we were required to do a case study to build a portfolio, and below is mine.
+In this case study, I worked as a junior data analyst who joined the team six months ago and have been busy learning about Cyclistic's mission and business goals - as well as how I can help Cyclistic achieve their goal. 
+
+# Introduction
+Cyclistic is a bike-share company. In 2016, they launched a successful bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geotracked and locked into a network of 692 stations across Chicago. 
+The bikes can be unlocked from one station and returned to any other station in the system anytime. Until now, Cyclistic's marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members. Cyclistic's finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers. Director of marketing, Moreno believes that maximizing the number of annual members will be key to future growth.
+The manager has set a clear goal of designing marketing strategies aimed at converting casual riders into annual members. To achieve this, my team and I (the marketing analyst team) need to understand how casual riders and annual members use Cyclistic bikes differently, in order to design a new marketing strategy to convert casual riders into annual members. The interest lies in analyzing the Cyclistic historical bike trip data to identify trends.
+
+## PHASE 1 - ASK
+Identifying the business task
+The problem we are trying to solve here is identifying the trends and behavior of the different customer segment of the Cyclistic bike company to enable us come up with a marketing strategy that can convert the casual members into annual members in order to increase growth for the company.
+
+_Considering key stakeholders_
+I will be working closely with some of the key stakeholders which include:
+*Lily Moreno: The director of marketing and my manager. Moreno is responsible for the development of campaigns and initiatives to promote the bike-share program. These may include email, social media, and other channels. 
+*The marketing analytics team: A team of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic marketing strategy. 
+*The executive team: The notoriously detail-oriented executive team that will decide whether to approve the recommended marketing program.
+
+## PHASE 2: PREPARE
+The data was located in Cyclistic's database and stored as zipped CSV files. It was made available by Motivate International Inc. under this [license](https://www.divvybikes.com/data-license-agreement). The data was collected by Cyclistic company itself, thereby it's reliable for the questions that needs to be solved. 
+
+## PHASE 3: PROCESS
+I downloaded the previous 12 months data as zipped files. I extracted the different CSV files into a folder and used RStudio to carry out data preparation and exploration. I decided to use this tool for the analysis because of its ability to handle large dataset. The steps taken will be listen below.
+
+To begin, I had to install and load some packages that would be used in the analysis. The packages are Tidyverse to help wrangle data, readr for loading the datasets, ggplot2 for data visualization, lubridate package for working with dates, skimr and janitor for data manipulation.
+
+```{r installing and loading tidyverse}
+library(tidyverse)
+```
+```{r loading readr and ggplot2}
+library(readr)
+library(ggplot2)
+
+```
+```{r installing and loading skimr}
+library(skimr)
+```
+```{r installing and loading}
+library(janitor)
+```
+```{r loading stringr and lubridate}
+library(stringr)
+library(lubridate)
+```
+### Step 1: Collecting data
+It's time to load our dataset into dataframes using the read.csv function
+```{r}
+df_apr_2021 <- read_csv('202104-divvy-tripdata.csv')
+df_may_2021 <- read.csv('202105-divvy-tripdata.csv')
+df_jun_2021 <- read_csv('202106-divvy-tripdata.csv')
+df_jul_2021 <- read.csv('202107-divvy-tripdata.csv')
+df_aug_2021 <- read_csv('202108-divvy-tripdata.csv')
+df_sep_2021 <- read.csv('202109-divvy-tripdata.csv')
+df_oct_2021 <- read_csv('202110-divvy-tripdata.csv')
+df_nov_2021 <- read.csv('202111-divvy-tripdata.csv')
+df_dec_2021 <- read_csv('202112-divvy-tripdata.csv')
+df_jan_2022 <- read.csv('202201-divvy-tripdata.csv')
+df_feb_2022 <- read_csv('202202-divvy-tripdata.csv')
+df_mar_2022 <- read.csv('202203-divvy-tripdata.csv')
+```
+## STEP 2: WRANGLE DATA AND COMBINE INTO A SINGLE FILE
+ Firstly, i had to check out my dataset to have a glimpse of it by comparing their column names and column type before combining together.
+```{r}
+glimpse(df_apr_2021)
+glimpse(df_may_2021)
+glimpse(df_jun_2021)
+glimpse(df_jul_2021)
+glimpse(df_aug_2021)
+glimpse(df_sep_2021)
+glimpse(df_oct_2021)
+glimpse(df_nov_2021)
+glimpse(df_dec_2021)
+glimpse(df_jan_2022)
+glimpse(df_feb_2022)
+glimpse(df_mar_2022)
+```
+*From the output above, it is seen that some of the dataframe have their columns (started_at and ended_at) formatted as chr instead of datetime. So I will have to convert the chr to datetime datatypes using as_datetime() function to maintain consistency*
+```{r}
+df_may_2021 <- mutate(df_may_2021, started_at = 
+                            as_datetime(started_at),
+                            ended_at = as_datetime(ended_at))
+df_jul_2021 <- mutate(df_jul_2021, started_at = 
+                        as_datetime(started_at),
+                      ended_at = as_datetime(ended_at))
+df_sep_2021 <- mutate(df_sep_2021, started_at = 
+                        as_datetime(started_at),
+                      ended_at = as_datetime(ended_at))
+df_nov_2021 <- mutate(df_nov_2021, started_at = 
+                        as_datetime(started_at),
+                      ended_at = as_datetime(ended_at))
+df_jan_2022 <- mutate(df_jan_2022, started_at = 
+                        as_datetime(started_at),
+                      ended_at = as_datetime(ended_at))
+df_mar_2022 <- mutate(df_mar_2022, started_at = 
+                        as_datetime(started_at),
+                      ended_at = as_datetime(ended_at))
+```
+
+
+## After having a glimpse of each dataframe and confirming they are all consistent, now i merge all together using the bind_rows function.
+```{r}
+all_ride <- bind_rows(df_apr_2021, df_may_2021, df_jun_2021,
+                        df_jul_2021, df_aug_2021, df_sep_2021,
+                        df_oct_2021, df_nov_2021, df_dec_2021,
+                        df_jan_2022, df_feb_2022, df_mar_2022)
+```
+### STEP 3: CLEANING UP AND ADDING DATA TO PREPARE FOR ANALYSIS
+ Inspecting the new table that has been created by using the following functions
+*colnames() to check for the list of column names.
+*nrow() to check how many rows are in the data frame.
+*dim() to check for the dimensions of the data frame.
+*head() to see the first 6 rows of data frame.  Also tail()
+*str() to see list of columns and data types (numeric, character, etc)
+*summary() to view the statistical summary of data. Mainly for numerics
+
+```{r}
+colnames(all_ride)
+nrow(all_ride)
+dim(all_ride)
+head(all_ride)
+str(all_ride)
+summary(all_ride)
+```
+ From above, it can be seen that all_ride contains 5,723,532 rows and 13 columns.
+ *Extracting columns that list the date, month, day, and year of each ride from column started_at*.
+ This will allow us to aggregate ride data for each month, day, or year.
+
+```{r}
+all_ride$date <- as.Date(all_ride$started_at)
+all_ride$month <- format(as.Date(all_ride$date), "%m")
+all_ride$day <- format(as.Date(all_ride$date), "%d")
+all_ride$year <- format(as.Date(all_ride$date), "%Y")
+all_ride$day_of_week <- format(as.Date(all_ride$date), "%A")
+
+```
+
+*Adding a new column called "ride_length" by calculating the difference in started_at and ended_at(in seconds)*
+```{r}
+all_ride$ride_length <- difftime(all_ride$ended_at,all_ride$started_at)
+
+```
+
+### Inspecting the structure of all the columns
+```{r}
+str(all_ride)
+```
+
+### Converting "ride_length" from Factor to numeric so we can run calculations on the data
+
+```{r}
+all_ride$ride_length <- as.numeric(as.character(all_ride$ride_length))
+is.numeric(all_ride$ride_length)
+
+```
+
+### Checking for negative ride time
+```{r}
+all_ride %>% 
+  filter(ended_at < started_at) 
+```
+There are 145 negative rows of time values. These might have been due to data collection error.
+ I'll have to remove it as it might skew the result of my analysis
+ 
+## Removing "bad" data
+ The dataframe includes a few negative time entries where ride_length was negative, so it needs to be filtered out.
+ We will create a new version of the dataframe (all_ride2) since data is being removed.
+ 
+```{r}
+all_ride2 <- all_ride %>% 
+  filter(ended_at > started_at) 
+
+glimpse(all_ride2)
+```
+### Removing null values
+```{r}
+all_ride2 <- all_ride2 %>% 
+  na.omit() 
+```
+### After removing the null values, we check our dataframe to see what we have.
+542,718 rows have been removed.
+```{r}
+glimpse(all_ride2)
+```
+## STEP 4: CONDUCTING DESCRIPTIVE ANALYSIS
+*Doing descriptive analysis on ride_length (all figures in seconds) to check for the average, midpoint, longest ride and shortest ride*
+
+```{r}
+all_ride2 %>% 
+  summarise(mean=mean(ride_length), median=median(ride_length), max=max(ride_length), min=min(ride_length))
+#average ride-length is 1252.888, median of 709, maximum of 3,356,649 and minimum of 1 sec
+```
+## Renaming variables for easy identification
+
+```{r}
+all_ride2 <- all_ride2 %>% 
+  rename(ride_type = rideable_type, # changing rideable_type col to ride_type
+         membership_type = member_casual)   # changing member_casual col to membership_type col
+```
+
+# Comparing the mean, median, max and min for members and casual users
+```{r}
+aggregate(all_ride2$ride_length ~ all_ride2$membership_type, FUN = mean)
+aggregate(all_ride2$ride_length ~ all_ride2$membership_type, FUN = median)
+aggregate(all_ride2$ride_length ~ all_ride2$membership_type, FUN = max)
+aggregate(all_ride2$ride_length ~ all_ride2$membership_type, FUN = min)
+### here, we can see th casual riders having an average of 1,846 sec ride length while the member riders have 782 sec ride length.
+### median for casual riders is 964 secs while for member riders is 565
+### maximum ride length for casual riders is 3,356,649 while for the member riders is 89,996
+### they both have minimum of 1 sec ride length
+
+```
+### Calculating the average ride time by each day for members vs casual users
+
+```{r}
+aggregate(all_ride2$ride_length ~ all_ride2$membership_type + all_ride2$day_of_week, FUN = mean)
+### from here, it is seen that both the casual riders and member riders rode more on sundays. Although, the Casual riders rode more with a ride length of 2,162 secs compared to member riders with 896 secs ride length. Also, the member riders ride as much during the weekdays.
+```
+*Putting the days of the week in order*
+```{r}
+all_ride2$day_of_week <- ordered(all_ride2$day_of_week, levels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
+
+```
+
+## PHASE 4: VISUALIZATION
+
+# checking for the count of members and casual riders
+```{r}
+table(all_ride2$membership_type)
+table(all_ride2$ride_type)
+
+### visualizing the member_casual count
+ggplot(data=all_ride2)+ geom_bar(mapping=aes(x=membership_type, fill = membership_type)) +
+labs(title = 'Member and Casual Membership Count',
+    x = 'Membership type',
+    y = 'Count')
+### Here number of casual riders-> 2,291,630
+### Number of member riders -> 2,888,525 i.e. we have more member riders compared to casual riders.
+### Also according to the ride type, we have 3,243,934 classic bike, 303,515 docked bike and 1,632,706 electric bike.
+```
+
+### plotting a graph to better visualize the result
+```{r}
+ggplot(data=all_ride2)+geom_bar(mapping=aes(x = ride_type, fill=ride_type)) +
+  facet_wrap(~membership_type) +
+  labs(title = 'Count of Casual and Member based on Ride_type', 
+       x = 'Ride Type',
+       y = 'Count')
+### here, we can see the member riders use more of the classic bike  compared to the electric bike. non of its riders use the docked bike. For the Casual riders, more use the classic bikes, followed by the electric bike, then the docked bike.
+```
+
+
+
+### Analyzing and visualizing ridership data by type and weekday
+```{r}
+all_ride2 %>% 
+  mutate(weekday = wday(started_at, label = TRUE)) %>%  #creates weekday field using wday()
+  group_by(membership_type, weekday) %>%  #groups by usertype and weekday
+  summarize(number_of_rides = n()							#calculates the number of rides and average duration 
+  ,average_duration = mean(ride_length)) %>% 		# calculates the average duration
+  arrange(membership_type, weekday) %>% 
+ggplot(aes(x = weekday, y = number_of_rides, fill = membership_type)) +
+  geom_col(position = "dodge")
+### here, it shows the number of rides among the riders during the weekday, casual riders have the highest number of rides during the saturday while member ridershave highest number on wednesday.
+```
+### Analyzing and visualizing ridership data by type and month
+
+```{r}
+all_ride2 %>% 
+  mutate(month = month(started_at, label = TRUE)) %>%  #creates month field using month()
+  group_by(membership_type, month) %>%  #groups by membership_type and month
+  summarize(number_of_rides = n()							#calculates the number of rides and average duration 
+  ,average_duration = mean(ride_length)) %>% 		# calculates the average duration
+  arrange(membership_type, month) %>% 
+ggplot(aes(x = month, y = number_of_rides, fill = membership_type)) +
+  geom_col(position = "dodge")
+### casual riders have low number of rides from the beginning of the year(i.e. january - apr), it start picking up from may to september with the peak during the month of july, then it starts declining after september while member riders have low number of rides from the beginning of the year(i.e. january - febuary), it normalises and ranges during march to september with the peak during the month of september, then it starts declining after september.
+```
+	
+### Visualizing average duration
+```{r}
+
+all_ride2 %>% 
+  mutate(weekday = wday(started_at, label = TRUE)) %>% 
+  group_by(membership_type, weekday) %>% 
+  summarise(number_of_rides = n()
+            ,average_duration = mean(ride_length)) %>% 
+  arrange(membership_type, weekday)  %>% 
+  ggplot(aes(x = weekday, y = average_duration, fill = membership_type)) +
+  geom_col(position = "dodge")
+
+  
+```
+
+## PHASE 5 - SHARE
+*Conclusions*:
+From the analysis, we could deduce the following observations:
+*The casual riders have the most ride length i.e. they ride the most.
+*casual riders are seen to be very active during the weekends (i.e. Saturday and Sunday) While member riders have the most ride length on sunday, it is also evenly distributed across the week which indicates they ride as much during the week.
+*Generally, We have more member riders compared to casual riders in the membership.Also according to the ride type, we have 3,243,934 classic bike, 303,515 docked bike and 1,632,706 electric bike.
+*The member riders use more of the classic bike  compared to the electric bike. non of its riders use the docked bike. For the Casual riders, more use the classic bikes, followed by the electric bike, then the docked bike.
+*Casual riders have the highest number of rides during saturday followed by sunday while member riders have the number of rides spread during the week with peak on wednesday.
+*Casual and member riders are seen to be more active between July and September
+*Casual riders have more than 2 times average duration than the member riders.
+
+## Recommendation
+* The marketing team can create a new campaign for the annual membership plan that would enable riders have more access to weekday rides as well as weekdend at a subsidized price. Ads could also be created outlining the benefits of using bikes daily either to commute to work or just to move around the city - focusing on its benefits in order to lure the casual riders into riding during the week.
+
+* Also, a membership plan could also be created for the casual riders who love to ride on weekends only that allows them pay for their subscription like the annaual member rider but only access the bikes on weekends.It will save them some money as their subscription will be done annually.
